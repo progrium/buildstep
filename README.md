@@ -24,7 +24,7 @@ Buildpacks should generally just work, but many of them make assumptions about t
 The buildstep script uses a buildstep base container that needs to be built. It must be created before
 you can use the buildstep script. To create it, run:
 
-    $ make build
+    $ docker build -t progrium/buildstep .
 
 This will create a container called `progrium/buildstep` that contains all supported buildpacks and the
 builder script that will actually perform the build using the buildpacks.
@@ -48,7 +48,7 @@ Buildstep needs to support a buildpack by installing packages needed to run the 
 it builds. For example, the Python buildpack would need Python to be installed.
 
 To add a new buildpack to buildstep, add commands to install the necessary packages that the buildpack and built
-application environment will need to stack/packages.txt and stack/prepare. Then add the buildpack Git URL to the file stack/buildpacks.txt
+application environment will need to Dockerfile.
 
 You'll then have to re-build.
 
