@@ -20,6 +20,7 @@ Buildpacks should generally just work, but many of them make assumptions about t
  * [Clojure](https://github.com/heroku/heroku-buildpack-clojure.git)
  * [Go](https://github.com/kr/heroku-buildpack-go.git)
  * [Dart](https://github.com/igrigorik/heroku-buildpack-dart.git)
+ * [Elixir](https://github.com/goshakkk/heroku-buildpack-elixir)
 
 ## Building Buildstep
 
@@ -34,8 +35,8 @@ builder script that will actually perform the build using the buildpacks.
 ## Building an App
 
 Running the buildstep script will take an application tar via STDIN and an application container name as
-an argument. It will put the application in a new container based on `progrium/buildstep` with the specified name. 
-Then it runs the builder script inside the container. 
+an argument. It will put the application in a new container based on `progrium/buildstep` with the specified name.
+Then it runs the builder script inside the container.
 
     $ cat myapp.tar | ./buildstep myapp
 
