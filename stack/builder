@@ -55,6 +55,7 @@ ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] |
 cat > /start <<EOF
 #!/bin/bash
 export HOME=/app
+[ -e $app_root/.app-env ] && . $app_root/.app-env
 for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
 cd $app_root
