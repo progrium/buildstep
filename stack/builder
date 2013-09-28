@@ -69,7 +69,9 @@ for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
 cd $app_root
 if [[ -f Procfile ]]; then
-    ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
+    pip install supervisor > /dev/null
+    ruby -e "require 'yaml';puts \"[supervisord]\nloglevel=debug\nnodaemon=true\n\n\"; YAML.load_file('Procfile').each{|k,v| puts \"[program:#{k}]\ncommand=sh -c #{v}\nautostart=true\nautorestart=true\nstopsignal=QUIT\n\n\"}" > supervisor.conf
+    supervisord -c supervisor.conf
 else
     ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
 fi
