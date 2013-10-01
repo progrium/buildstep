@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+app_user=${1:-www-data}
+app_group=${2:-$app_user}
+app_root=/app
+
+mkdir -p $app_root
+tar -xC $app_root
+chown -R $app_user:$app_group $app_root
+chmod -R 700 $app_root
+
+cat > /exec <<EOF
+#!/bin/bash
+export HOME=$app_root
+for file in $app_root/.profile.d/*; do source \$file; done
+hash -r
+cd $app_root
+"\$@"
+EOF
+chmod +x /exec
+
+cat > /start <<EOF
+#!/bin/bash
+export HOME=$app_root
+for file in $app_root/.profile.d/*; do source \$file; done
+hash -r
+cd $app_root
+if [[ -f Procfile ]]; then
+    ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
+else
+    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
+fi
+EOF
+chmod +x /start

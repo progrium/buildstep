@@ -2,11 +2,17 @@
 set -e
 
 app_root=/app
-build_root=/build/app
-cache_root=/cache
-buildpack_root=/build/buildpacks
+build_root=/tmp/build/app
+cache_root=/tmp/cache
+buildpack_root=/tmp/buildpacks
 
-cp -r /app /build
+mkdir -p $buildpack_root
+cp -r /build/buildpacks/* $buildpack_root
+
+mkdir -p /tmp/build
+cp -r $app_root $build_root
+
+cd $build_root
 
 buildpacks=($buildpack_root/*)
 selected_buildpack=
@@ -15,7 +21,7 @@ mkdir -p $cache_root
 mkdir -p $build_root/.profile.d
 
 # This is to get a custom buildpack. Probably should use profile.d though
-[[ -f "$app_root/.env" ]] && . "$app_root/.env"
+[[ -f "$build_root/.env" ]] && . "$build_root/.env"
 
 if [ -n "$BUILDPACK_URL" ]; then
   echo "       Fetching custom buildpack"
@@ -40,7 +46,7 @@ fi
 $selected_buildpack/bin/compile "$build_root" "$cache_root"
 
 echo "-----> Discovering process types"
-$selected_buildpack/bin/release "$app_root" "$cache_root" > /build/app/.release
+$selected_buildpack/bin/release "$build_root" "$cache_root" > $build_root/.release
 
 if [[ -f "$build_root/Procfile" ]]; then
   types=$(ruby -e "require 'yaml';puts YAML.load_file('$build_root/Procfile').keys().join(', ')")
@@ -52,29 +58,5 @@ default_types=$(ruby -e "require 'yaml';puts (YAML.load_file('$build_root/.relea
 mkdir -p $build_root/.profile.d
 ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=#{v}\"}" > $build_root/.profile.d/config_vars
 
-cat > /exec <<EOF
-#!/bin/bash
-export HOME=/app
-for file in $app_root/.profile.d/*; do source \$file; done
-hash -r
-cd $app_root
-"\$@"
-EOF
-chmod +x /exec
-
-cat > /start <<EOF
-#!/bin/bash
-export HOME=/app
-for file in $app_root/.profile.d/*; do source \$file; done
-hash -r
-cd $app_root
-if [[ -f Procfile ]]; then
-    ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
-else
-    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
-fi
-EOF
-chmod +x /start
-
-rm -fR /app
-mv /build/app /
+rm -r /app/*
+mv $build_root/* $build_root/.[!.]* /app

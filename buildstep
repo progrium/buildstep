@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e
 NAME="$1"
+APP_USER="www-data"
 
 # Place the app inside the container 
-ID=$(cat | docker run -i -a stdin progrium/buildstep /bin/bash -c "mkdir -p /app && tar -xC /app")
+ID=$(cat | docker run -i -a stdin progrium/buildstep /bin/bash -c "/build/prepare_app_env $APP_USER")
 test $(docker wait $ID) -eq 0
 docker commit $ID $NAME > /dev/null
 
 # Run the builder script and attach to view output
-ID=$(docker run -d $NAME /build/builder)
+ID=$(docker run -u $APP_USER -d $NAME /build/builder)
 docker attach $ID
 test $(docker wait $ID) -eq 0
 docker commit $ID $NAME > /dev/null
