@@ -43,17 +43,30 @@ export REQUEST_ID=$(openssl rand -base64 32)
 $selected_buildpack/bin/compile "$build_root" "$cache_root"
 
 echo "-----> Discovering process types"
-$selected_buildpack/bin/release "$app_root" "$cache_root" > /build/app/.release
+
+HAS_RELEASE=false
+if [[ -f "$selected_buildpack/bin/release" ]]; then
+  $selected_buildpack/bin/release "$app_root" "$cache_root" > /build/app/.release
+  HAS_RELEASE=true
+fi
 
 if [[ -f "$build_root/Procfile" ]]; then
   types=$(ruby -e "require 'yaml';puts YAML.load_file('$build_root/Procfile').keys().join(', ')")
   echo "       Procfile declares types -> $types"
+elif ! $HAS_RELEASE; then
+  echo "       No processes found to run."
+  exit 1
 fi
-default_types=$(ruby -e "require 'yaml';puts (YAML.load_file('$build_root/.release')['default_process_types'] || {}).keys().join(', ')")
-[[ $default_types ]] && echo "       Default process types for $buildpack_name -> $default_types"
 
 mkdir -p $build_root/.profile.d
-ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=#{v}\"}" > $build_root/.profile.d/config_vars
+
+if $HAS_RELEASE; then
+  default_types=$(ruby -e "require 'yaml';puts (begin YAML.load_file('$build_root/.release')['default_process_types'] rescue {} end).keys().join(', ')")
+  [[ $default_types ]] && echo "       Default process types for $buildpack_name -> $default_types"
+
+  ruby -e "require 'yaml';(begin YAML.load_file('$build_root/.release')['config_vars'] rescue {} end).each{|k,v| puts \"#{k}=#{v}\"}" > $build_root/.profile.d/config_vars
+fi
+
 
 cat > /exec <<EOF
 #!/bin/bash
@@ -74,7 +87,7 @@ cd $app_root
 if [[ -f Procfile ]]; then
     ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
 else
-    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
+    ruby -e "require 'yaml';puts (begin YAML.load_file('.release')['default_process_types'] rescue {} end)['\$1']" | bash
 fi
 EOF
 chmod +x /start
