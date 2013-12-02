@@ -3,18 +3,20 @@ set -e
 NAME="$1"
 TAG="$2"
 
-# Place the app inside the container
-ID=$(cat | docker run -i -a stdin progrium/buildstep /bin/bash -c "mkdir -p /app && tar -xC /app")
-test $(docker wait $ID) -eq 0
-docker commit $ID $NAME $TAG > /dev/null
-
-# Run the builder script and attach to view output
+# use a tag in the image name, if one was provided
 if [[ -z "$TAG" ]]; then
   IMAGE=$NAME
 else
   IMAGE=$NAME:$TAG
 fi
+
+# Place the app inside the container
+ID=$(cat | docker run -i -a stdin progrium/buildstep /bin/bash -c "mkdir -p /app && tar -xC /app")
+test $(docker wait $ID) -eq 0
+docker commit $ID $IMAGE > /dev/null
+
+# Run the builder script and attach to view output
 ID=$(docker run -d $IMAGE /build/builder)
 docker attach $ID
 test $(docker wait $ID) -eq 0
-docker commit $ID $NAME $TAG > /dev/null
+docker commit $ID $IMAGE> /dev/null
