@@ -13,5 +13,5 @@ https://github.com/igrigorik/heroku-buildpack-dart.git
 https://github.com/rhy-jot/buildpack-nginx.git
 https://github.com/Kloadut/heroku-buildpack-static-apache.git
 https://github.com/bacongobbler/heroku-buildpack-jekyll.git
-https://github.com/arnos/null-buildpack
+https://github.com/arnos/null-buildpack.git
 https://github.com/arnos/heroku-buildpack-vertx-jdk7.git
