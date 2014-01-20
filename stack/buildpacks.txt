@@ -10,7 +10,6 @@ https://github.com/heroku/heroku-buildpack-grails.git
 https://github.com/CHH/heroku-buildpack-php.git
 https://github.com/kr/heroku-buildpack-go.git
 https://github.com/oortcloud/heroku-buildpack-meteorite.git
-https://github.com/miyagawa/heroku-buildpack-perl.git
 https://github.com/igrigorik/heroku-buildpack-dart.git
 https://github.com/rhy-jot/buildpack-nginx.git
 https://github.com/Kloadut/heroku-buildpack-static-apache.git
