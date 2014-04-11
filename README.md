@@ -9,17 +9,8 @@ Heroku-style application builds using Docker and Buildpacks. Used by [Dokku](htt
 
 ## Supported Buildpacks
 
-Buildpacks should generally just work, but many of them make assumptions about their environment. So Buildstep has a list of officially supported buildpacks that are built-in and ready to be used.
+Buildpacks should generally just work, but many of them make assumptions about their environment. So Buildstep has a [list of officially supported buildpacks](https://github.com/progrium/buildstep/blob/master/stack/buildpacks.txt) that are built-in and ready to be used.
 
- * [Ruby](https://github.com/heroku/heroku-buildpack-ruby)
- * [Node.js](https://github.com/heroku/heroku-buildpack-nodejs)
- * [Java](https://github.com/heroku/heroku-buildpack-java)
- * [Play!](https://github.com/heroku/heroku-buildpack-play)
- * [Python](https://github.com/heroku/heroku-buildpack-python)
- * [PHP](https://github.com/heroku/heroku-buildpack-php.git)
- * [Clojure](https://github.com/heroku/heroku-buildpack-clojure.git)
- * [Go](https://github.com/kr/heroku-buildpack-go.git)
- * [Dart](https://github.com/igrigorik/heroku-buildpack-dart.git)
 
 ## Building Buildstep
 
