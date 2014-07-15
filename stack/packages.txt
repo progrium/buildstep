@@ -37,6 +37,7 @@ openssh-server
 postgresql
 postgresql-server-dev-9.1
 python-dev
+python-pip
 ruby1.9.1-dev
 rubygems
 socat
