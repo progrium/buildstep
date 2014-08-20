@@ -1,3 +1,4 @@
+https://github.com/ddollar/heroku-buildpack-multi.git
 https://github.com/heroku/heroku-buildpack-ruby.git
 https://github.com/heroku/heroku-buildpack-nodejs.git
 https://github.com/heroku/heroku-buildpack-java.git
@@ -15,4 +16,3 @@ https://github.com/igrigorik/heroku-buildpack-dart.git
 https://github.com/rhy-jot/buildpack-nginx.git
 https://github.com/Kloadut/heroku-buildpack-static-apache.git
 https://github.com/bacongobbler/heroku-buildpack-jekyll.git
-https://github.com/ddollar/heroku-buildpack-multi.git
