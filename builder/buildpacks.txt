@@ -10,9 +10,3 @@ https://github.com/heroku/heroku-buildpack-scala.git#v41
 https://github.com/heroku/heroku-buildpack-play.git#ceede861
 https://github.com/heroku/heroku-buildpack-php.git#v43
 https://github.com/heroku/heroku-buildpack-go.git#b261aab1
-https://github.com/oortcloud/heroku-buildpack-meteorite.git#76efa5cf
-https://github.com/miyagawa/heroku-buildpack-perl.git#2da7480a
-https://github.com/igrigorik/heroku-buildpack-dart.git#c492c52c
-https://github.com/rhy-jot/buildpack-nginx.git#f914a3d1
-https://github.com/Kloadut/heroku-buildpack-static-apache.git#f65c8358
-https://github.com/bacongobbler/heroku-buildpack-jekyll.git#803079bf

@@ -1,5 +1,19 @@
 # HEAD
 
+## Removed buildpacks
+
+The following buildpacks have been removed from the default image.
+They can be installed using the custom buildpack feature. To use one
+please commit a file in the root of your git repository named `.env`
+containing `export BUILDPACK_URL=<repository>`.
+
+  * Metorite - `https://github.com/oortcloud/heroku-buildpack-meteorite.git`
+  * Perl - `https://github.com/miyagawa/heroku-buildpack-perl.git`
+  * Dart - `https://github.com/igrigorik/heroku-buildpack-dart.git`
+  * NGINX - `https://github.com/rhy-jot/buildpack-nginx.git`
+  * Apache - `https://github.com/Kloadut/heroku-buildpack-static-apache.git`
+  * Jekyll - `https://github.com/bacongobbler/heroku-buildpack-jekyll.git`
+
 ## Removed packages
 
   * Java
