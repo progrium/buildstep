@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM progrium/cedarish:cedar14
 MAINTAINER progrium "progrium@gmail.com"
 
 RUN mkdir /build
