@@ -9,7 +9,7 @@ Heroku-style application builds using Docker and Buildpacks. Used by [Dokku](htt
 
 ## Supported Buildpacks
 
-Buildpacks should generally just work, but many of them make assumptions about their environment. So Buildstep has a [list of officially supported buildpacks](https://github.com/progrium/buildstep/blob/master/builder/buildpacks.txt) that are built-in and ready to be used.
+Buildpacks should generally just work, but many of them make assumptions about their environment. So Buildstep has a [list of officially supported buildpacks](https://github.com/progrium/buildstep/blob/master/builder/config/buildpacks.txt) that are built-in and ready to be used.
 
 
 ## Building Buildstep
