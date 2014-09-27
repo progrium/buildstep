@@ -78,7 +78,7 @@ if [[ -s "$build_root/.release" ]]; then
 	[[ $default_types ]] && echo_normal "Default process types for $buildpack_name -> $default_types"
 fi
 
-## Load profile.d and release config
+## Export release config
 
 if [[ -s .release ]]; then
 	ruby -e "require 'yaml';(YAML.load_file('.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=\${#{k}:-'#{v}'}\"}" > .profile.d/config_vars.sh
