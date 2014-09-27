@@ -3,11 +3,13 @@ set -eo pipefail
 source $(dirname $0)/build-helpers.sh
 
 app_dir=/app
+env_dir=/tmp/env
 build_root=/tmp/build
 cache_root=/cache
 buildpack_root=/tmp/buildpacks
 
 mkdir -p $app_dir
+mkdir -p $env_dir
 mkdir -p $cache_root
 mkdir -p $buildpack_root
 mkdir -p $build_root/.profile.d
@@ -60,7 +62,7 @@ fi
 
 ## Buildpack compile
 
-$selected_buildpack/bin/compile "$build_root" "$cache_root" | ensure_indent
+$selected_buildpack/bin/compile "$build_root" "$cache_root" "$env_dir" | ensure_indent
 $selected_buildpack/bin/release "$build_root" "$cache_root" > $build_root/.release
 
 ## Display process types
@@ -79,7 +81,7 @@ fi
 ## Load profile.d and release config
 
 if [[ -s .release ]]; then
-	ruby -e "require 'yaml';(YAML.load_file('.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=\${#{k}:-'#{v}'}\"}" > .profile.d/config_vars
+	ruby -e "require 'yaml';(YAML.load_file('.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=\${#{k}:-'#{v}'}\"}" > .profile.d/config_vars.sh
 fi
 
 ## Generate start commands
@@ -87,7 +89,7 @@ cat > /exec <<EOF
 #!/bin/bash
 export HOME=$app_dir
 cd $app_dir
-for file in .profile.d/*; do
+for file in .profile.d/*.sh; do
 	source \$file
 done
 hash -r
@@ -98,7 +100,7 @@ cat > /start <<EOF
 #!/bin/bash
 export HOME=$app_dir
 cd $app_dir
-for file in .profile.d/*; do
+for file in .profile.d/*.sh; do
 	source \$file
 done
 hash -r
