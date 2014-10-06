@@ -1,0 +1,13 @@
+box: wercker-labs/docker
+no-response-timeout: 12
+build:
+    steps:
+        - install-packages:
+            packages: build-essential bundler
+        - bundle-install
+        - script:
+            name: create buildstep image
+            code: docker build -t progrium/buildstep .
+        - script:
+            name: run tests
+            code: bundle exec cucumber --exclude features/apps
