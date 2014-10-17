@@ -70,10 +70,15 @@ ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] |
 cat > /exec <<EOF
 #!/bin/bash
 export HOME=/app
-for file in $app_root/.profile.d/*; do source \$file; done
-hash -r
+user=\$(openssl rand -hex 10)
+useradd --no-create-home --home-dir \$HOME \$user
+chown --recursive \$user:\$user \$HOME
 cd $app_root
-"\$@"
+su --preserve-environment \$user <<SCRIPT
+  for file in $app_root/.profile.d/*; do source \\\$file; done
+  hash -r
+  \$@
+SCRIPT
 EOF
 chmod +x /exec
 
@@ -84,9 +89,9 @@ for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
 cd $app_root
 if [[ -f Procfile ]]; then
-    ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
+    xargs -xa <(ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']") /exec
 else
-    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
+    xargs -xa <(ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']") /exec
 fi
 EOF
 chmod +x /start
