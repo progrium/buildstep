@@ -50,6 +50,8 @@ fi
 
 # generate a random request id used by buildpack instrumentation
 export REQUEST_ID=$(openssl rand -base64 32)
+# choose a stack for the buildpack to use
+export STACK=cedar
 
 $selected_buildpack/bin/compile "$build_root" "$cache_root"
 
