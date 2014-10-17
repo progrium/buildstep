@@ -2,7 +2,7 @@ import NativePackagerKeys._
 
 packageArchetype.java_application
 
-name := """buildstep-scala"""
+name := """scala-getting-started"""
 
 version := "1.0"
 
