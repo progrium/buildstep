@@ -82,12 +82,26 @@ cat > /start <<EOF
 export HOME=/app
 for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
+
+# set up signal trapping so that a docker stop's signal will propagate
+# this requires starting the process from the procfile in the background and issuing a wait
+onexit() {
+  echo "SIGTERM received"
+  echo "sending SIGTERM to all processes"
+  children=\$(ps --ppid=\$\$ -o pid='')
+  kill -- \$children &> /dev/null
+  sleep 1
+}
+trap onexit SIGTERM
+
 cd $app_root
 if [[ -f Procfile ]]; then
-    ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
+    \`ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']"\` &
 else
-    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
+    \`ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']"\` &
 fi
+wait
+
 EOF
 chmod +x /start
 
