@@ -19,6 +19,7 @@ libpng12-dev
 libmagickcore-dev
 libmagickwand-dev
 libmcrypt-dev
+libmcrypt4
 libmysqlclient-dev
 libpq-dev
 libreadline5
