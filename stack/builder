@@ -4,6 +4,7 @@ set -e
 app_root=/app
 build_root=/build/app
 cache_root=/cache/app
+env_root=/env
 buildpack_root=/build/buildpacks
 
 cp -r /app /build
@@ -13,6 +14,7 @@ selected_buildpack=
 
 mkdir -p $cache_root
 mkdir -p $build_root/.profile.d
+mkdir -p $env_root
 
 # This is to get a custom buildpack. Probably should use profile.d though
 [[ -f "$app_root/.env" ]] && . "$app_root/.env"
@@ -51,7 +53,7 @@ fi
 # generate a random request id used by buildpack instrumentation
 export REQUEST_ID=$(openssl rand -base64 32)
 
-$selected_buildpack/bin/compile "$build_root" "$cache_root"
+$selected_buildpack/bin/compile "$build_root" "$cache_root" "$env_root"
 
 echo "-----> Discovering process types"
 
