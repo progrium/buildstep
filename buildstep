@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 NAME="$1"
 TAG="$2"
 
