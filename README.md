@@ -37,7 +37,8 @@ If you didn't already have an application tar, you can create one on the fly.
 The resulting container has a built app ready to go. The builder script also parses the Procfile and produces
 a starter script that takes a process type. Run your app with:
 
-    $ docker run -d myapp /bin/bash -c "/start web"
+    $ docker run -p 4000:4000 -d -e PORT=4000 blog /start web
+    $ docker run -i -t myapp /start console
 
 ## Adding Buildpacks
 
