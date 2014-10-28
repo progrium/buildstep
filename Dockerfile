@@ -1,5 +1,5 @@
 FROM progrium/cedarish:cedar14
-MAINTAINER progrium "progrium@gmail.com"
+MAINTAINER Jeff Lindsay <progrium@gmail.com>
 
 ADD ./stack/configs/etc-profile /etc/profile
 
