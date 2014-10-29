@@ -37,8 +37,14 @@ chown -R $user_name:$user_name  $app_dir \
 # Compile the slug
 /usr/bin/setuidgid $user_name /build/compile.sh
 
+# Populate the service directory
+pushd $build_root >/dev/null
+[[ ! -f Procfile ]] && ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['default_process_types'] || {}).tap { |p| File.open('Procfile', 'w') { |f| f.puts p.to_yaml } }"
+/build/populate-service-dir .service Procfile
+popd >/dev/null
+
 ## Generate start commands
-cat > /start <<EOF
+cat >/exec <<EOF
 #!/bin/bash
 export HOME=$app_dir
 chown -R $user_name:$user_name $app_dir
@@ -49,24 +55,26 @@ for file in .profile.d/*.sh; do
 done
 hash -r
 
-case "\$(basename \$0)" in
-  start)
-    if [[ -f Procfile ]]; then
-      command="\$(ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']")"
-    else
-      command="\$(ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']")"
-    fi
-    ;;
-  *)
-    command="\$@"
-    ;;
-esac
-
-setuidgid $user_name \$(eval echo \${command})
+exec 2>&1
+exec setuidgid $user_name \$@
 EOF
 
-chmod +x /start
-ln -nsf /start /exec
+cat >/start <<EOF
+#!/bin/bash
+export HOME=$app_dir
+chown -R $user_name:$user_name $app_dir
+cd $app_dir
+
+for file in .profile.d/*.sh; do
+  source \$file
+done
+hash -r
+
+exec 2>&1
+exec setuidgid $user_name runsv ".service/\$1"
+EOF
+
+chmod +x /start /exec
 rm -rf $app_dir
 mv $build_root $app_dir
 

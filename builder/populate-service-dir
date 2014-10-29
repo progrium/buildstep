@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'shellwords'
+
+SERVICE_DIR, PROCFILE_PATH = ARGV
+
+def write(ps, name, content)
+  ps_service_dir = File.join(SERVICE_DIR, ps)
+  FileUtils.mkdir_p(ps_service_dir)
+
+  ps_file_path = File.join(ps_service_dir, name)
+  File.open(ps_file_path, 'w') do |ps_f|
+    ps_f.puts content.gsub(/^\s+/, '')
+  end
+  File.chmod(0755, ps_file_path)
+end
+
+File.read(PROCFILE_PATH).gsub("\r\n", "\n").split("\n").map do |line|
+  next unless line =~ /^([A-Za-z0-9_-]+):\s*(.+)$/
+  ps, command = Regexp.last_match[1], Regexp.last_match[2]
+  command = "bash -c #{command.inspect}" if command =~ /(;|&&)/
+  write(ps, 'run', <<-EOF
+      #!/bin/bash
+      cd "$HOME"
+      exec 2>&1
+      exec #{command}
+    EOF
+  )
+
+  write(ps, 'finish', <<-EOF
+    #!/bin/bash
+    exec 2>&1
+    exec pkill -TERM -f #{"runsv #{SERVICE_DIR}/#{ps}".shellescape}
+    EOF
+  )
+end
