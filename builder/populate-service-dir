@@ -31,7 +31,9 @@ File.read(PROCFILE_PATH).gsub("\r\n", "\n").split("\n").map do |line|
   write(ps, 'finish', <<-EOF
     #!/bin/bash
     exec 2>&1
-    exec pkill -TERM -f #{"runsv #{SERVICE_DIR}/#{ps}".shellescape}
+    PARENT_PID=$(pgrep -f #{"runsv #{SERVICE_DIR}/#{ps}".shellescape})
+    pkill -TERM -P $PARENT_PID
+    pkill -TERM -g $PARENT_PID
     EOF
   )
 end
