@@ -1,4 +1,4 @@
-https://github.com/ddollar/heroku-buildpack-multi.git#93505719
+https://github.com/ddollar/heroku-buildpack-multi.git#6e7909438
 https://github.com/heroku/heroku-buildpack-ruby.git#v127
 https://github.com/heroku/heroku-buildpack-nodejs.git#v60
 https://github.com/heroku/heroku-buildpack-clojure.git#bc2bfd83
