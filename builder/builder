@@ -49,24 +49,31 @@ for file in .profile.d/*.sh; do
 done
 hash -r
 
-case "\$(basename \$0)" in
-  start)
-    if [[ -f Procfile ]]; then
-      command="\$(ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']")"
-    else
-      command="\$(ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']")"
-    fi
-    ;;
-  *)
-    command="\$@"
-    ;;
-esac
+if [[ -f Procfile ]]; then
+  command="\$(ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']")"
+else
+  command="\$(ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']")"
+fi
 
 setuidgid $user_name \$(eval echo \${command})
 EOF
 
+cat > /exec <<EOF
+#!/bin/bash
+export HOME=$app_dir
+chown -R $user_name:$user_name $app_dir
+cd $app_dir
+
+for file in .profile.d/*.sh; do
+  source \$file
+done
+hash -r
+command="\$@"
+setuidgid $user_name \$(eval echo \${command})
+EOF
+
 chmod +x /start
-ln -nsf /start /exec
+chmod +x /exec
 rm -rf $app_dir
 mv $build_root $app_dir
 
