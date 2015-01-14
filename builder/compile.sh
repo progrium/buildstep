@@ -81,12 +81,12 @@ if [[ -f "$build_root/Procfile" ]]; then
 fi
 default_types=""
 if [[ -f "$build_root/.release" ]]; then
-  default_types=$(ruby -e "require 'yaml';puts (YAML.load_file('$build_root/.release')['default_process_types'] || {}).keys().join(', ')")
+  default_types=$(ruby -e "require 'yaml';puts ((YAML.load_file('$build_root/.release') || {})['default_process_types'] || {}).keys().join(', ')")
   [[ $default_types ]] && echo_normal "Default process types for $buildpack_name -> $default_types"
 fi
 
 ## Export release config
 
 if [[ -f "$build_root/.release" ]]; then
-  ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] || {}).each{|k,v| puts \"export #{k}='#{v}'\"}" > $build_root/.profile.d/00_config_vars.sh
+  ruby -e "require 'yaml';((YAML.load_file('$build_root/.release') || {})['config_vars'] || {}).each{|k,v| puts \"export #{k}='#{v}'\"}" > $build_root/.profile.d/00_config_vars.sh
 fi
