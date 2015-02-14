@@ -8,8 +8,19 @@ mkdir -p $cache_root
 mkdir -p $buildpack_root
 mkdir -p $build_root/.profile.d
 
-user_id=$((RANDOM+1000))
-user_name="u${user_id}"
+if [ "$USER_ID" == "" ];
+then
+	user_id=$((RANDOM+1000));
+else
+	user_id=$USER_ID;
+fi
+
+if [ "$USER_NAME" == "" ];
+then
+	user_name="u${user_id}";
+else
+	user_name=$USER_NAME;
+fi
 
 # Create a random user
 /usr/sbin/addgroup --quiet --gid $user_id $user_name
