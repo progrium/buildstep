@@ -2,12 +2,15 @@ box: wercker-labs/docker
 no-response-timeout: 12
 build:
     steps:
-        - install-packages:
-            packages: build-essential bundler
-        - bundle-install
+        - script:
+            name: upgrade docker
+            code: curl -sSL https://get.docker.io | sh
         - script:
             name: create buildstep image
-            code: docker build -t progrium/buildstep .
+            code: make build
+        - script:
+            name: create buildstep test image
+            code: make build-test
         - script:
             name: run tests
-            code: bundle exec cucumber --exclude features/apps
+            code: make run-test
