@@ -1,7 +1,16 @@
 FROM progrium/cedarish:cedar14
 MAINTAINER Jeff Lindsay <progrium@gmail.com>
 
-ADD ./stack/configs/etc-profile /etc/profile
+RUN curl https://github.com/gliderlabs/herokuish/releases/download/v0.1.0/herokuish_0.1.0_linux_x86_64.tgz \
+		--silent -L | tar -xzC /bin
 
-ADD ./builder/ /build
-RUN xargs -L 1 /build/install-buildpack /tmp/buildpacks < /build/config/buildpacks.txt
+# install herokuish supported buildpacks
+RUN /bin/herokuish buildpack install
+
+# entrypoints
+RUN ln -s /bin/herokuish /build
+RUN ln -s /bin/herokuish /start
+RUN ln -s /bin/herokuish /exec
+
+# backwards compatibility
+ADD ./rootfs /

@@ -1,5 +1,8 @@
 #!/bin/bash
 set -eo pipefail
+
+echo "[DEPRECATED] This script is outdated and was originally for demo purposes. It will be removed soon."
+
 NAME="$1"
 TAG="$2"
 
