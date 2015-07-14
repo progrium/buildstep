@@ -1,4 +1,4 @@
-# Buildstep
+# Buildstep [![wercker status](https://app.wercker.com/status/c1c25f5d0ff8ea1823063000430114b2/s "wercker status")](https://app.wercker.com/project/bykey/c1c25f5d0ff8ea1823063000430114b2)
 
 Heroku-style application builds using Docker and Buildpacks. Used by [Dokku](https://github.com/progrium/dokku) to make a mini-Heroku.
 
