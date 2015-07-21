@@ -4,77 +4,93 @@
 
 Buildkit Config
 
-`BUILDKIT_BUILDERS` - comma separated list of builders to use in given order
-example: dockerfile,herokuish
-builtin: dockerfile, herokuish
-sourced from plugins in builder.bash
+`BUILDKIT_BUILDERS`
+- comma separated list of builders to use in given order
+- example: dockerfile,herokuish
+- builtin: dockerfile, herokuish
+- sourced from plugins in builder.bash
 
-`BUILDKIT_ARTIFACT` - type of artifact: file or image.
-default: image
+`BUILDKIT_ARTIFACT`
+- type of artifact: file or image.
+- default: image
 
-`BUILDKIT_FILE` - name of file to use when working with file artifact
-example: myapp.tgz
+`BUILDKIT_FILE`
+- name of file to use when working with file artifact
+- example: myapp.tgz
 
-`BUILDKIT_TAG` - name of tag to use on image when working with image artifact
-example: progrium/myapp:v1
+`BUILDKIT_TAG`
+- name of tag to use on image when working with image artifact
+- example: progrium/myapp:v1
 
-`BUILDKIT_INPUT` - input method to use for staging /tmp/src
-example: stdin
-builtin: stdin, dir
-sourced from plugins in importer.bash
+`BUILDKIT_INPUT`
+- input method to use for staging /tmp/src
+- example: stdin
+- builtin: stdin, dir
+- sourced from plugins in importer.bash
 
-`BUILDKIT_OUTPUT` - output method to use with artifact
-example: docker
-builtin: stdout, docker, dir
-sourced from plugins in exporter.bash
+`BUILDKIT_OUTPUT`
+- output method to use with artifact
+- example: docker
+- builtin: stdout, docker, dir
+- sourced from plugins in exporter.bash
 
-`BUILDKIT_ENGINE` - docker engine to use for build.
-default: local
-example: dind
-builtin: local, dind
-sourced from plugins in engine.bash
+`BUILDKIT_ENGINE`
+- docker engine to use for build.
+- default: local
+- example: dind
+- builtin: local, dind
+- sourced from plugins in engine.bash
 
-`BUILDKIT_VOLUME` - path used for volume in data container images.
-default: /data
-example: /my/long/path
+`BUILDKIT_VOLUME`
+- path used for volume in data container images.
+- default: /data
+- example: /my/long/path
 
 
 Herokuish Plugin Config
 
-`HEROKUISH_IMAGE` - image to use for builder.
-default: gliderlabs/herokuish:latest
-example: gliderlabs/herokuish:v3
+`HEROKUISH_IMAGE`
+- image to use for builder.
+- default: gliderlabs/herokuish:latest
+- example: gliderlabs/herokuish:v3
 
-`HEROKUISH_MODE` - force artifact mode: slug or image
-example: slug
-if not specified, mode is based on BUILDKIT_ARTIFACT
+`HEROKUISH_MODE`
+- force artifact mode: slug or image
+- example: slug
+- if not specified, mode is based on BUILDKIT_ARTIFACT
 
-`HEROKUISH_INSTALL` - space separated urls to buildpacks to install
-example: https://github.com/heroku/heroku-buildpack-go
-```
+`HEROKUISH_INSTALL`
+- space separated urls to buildpacks to install
+- example: https://github.com/heroku/heroku-buildpack-go
 
 Docker-in-Docker Plugin Config
 
-`DIND_IMAGE` - image to use for dind.
-default: progrium/dind:latest
+`DIND_IMAGE`
+- image to use for dind.
+- default: progrium/dind:latest
 
-`DIND_NAME` - name to use for dind container.
-default: buildkit.dind-<random>
+`DIND_NAME`
+- name to use for dind container.
+- default: buildkit.dind-<random>
 
-`DIND_OPTS` - docker daemon options to pass to dind
-example: -H 127.0.0.1:1234
+`DIND_OPTS`
+- docker daemon options to pass to dind
+- example: -H 127.0.0.1:1234
 
-`DIND_MOUNT` - host path used to bind mount in /var/lib/docker
-example: /mnt/my/cached/dind/data
+`DIND_MOUNT`
+- host path used to bind mount in /var/lib/docker
+- example: /mnt/my/cached/dind/data
 
 
 Dockerfile Plugin Config
 
-`DOCKERFILE_OPTS` - options to pass to `docker build`
-example: —-force-rm
+`DOCKERFILE_OPTS`
+- options to pass to `docker build`
+- example: —-force-rm
 
-`DOCKERFILE_CP` - specify file to `docker cp` from image
-example: /path/to/artifact/in/container
+`DOCKERFILE_CP`
+- specify file to `docker cp` from image
+- example: /path/to/artifact/in/container
 
 ## Examples
 ```
