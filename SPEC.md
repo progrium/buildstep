@@ -6,7 +6,7 @@ Buildkit Config
 
 `BUILDKIT_BUILDERS`
 - comma separated list of builders to use in given order
-- example: dockerfile,herokuish
+- example: dockerfile, herokuish
 - builtin: dockerfile, herokuish
 - sourced from plugins in builder.bash
 
@@ -108,7 +108,7 @@ docker run —-rm \
 
 # Same as above but first detects if a Dockerfile exists to make image from,
 # and exports the image as a file called myapp_v2.tgz into ./build
-docker run —-rm \
+docker run --rm \
 	-e BUILDKIT_BUILDERS=dockerfile,herokuish \
 	-e BUILDKIT_ARTIFACT=file \
 	-e BUILDKIT_TAG=myapp:v2 \
@@ -172,7 +172,8 @@ stdin:import() {
   cat | tar -xC /tmp/src
 }
 ```
-### exporter.bash
+
+### exporter.bash - (export from buildkit)
 
  * `<plugin>:export-file` - exports a file artifact, potentially staged at /tmp/artifact
  * `<plugin>:export-image` - exports an image artifact, tagged with BUILDKIT_TAG
