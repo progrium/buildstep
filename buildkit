@@ -24,12 +24,12 @@ main() {
 	$(plugn source exporter)
 
 	# Import
-  eval "$BUILDKIT_INPUT:import"
+	eval "$BUILDKIT_INPUT:import"
 
 	for i in $BUILDKIT_BUILDERS; do
-			if $("$BUILDKIT_BUILDERS:detect-build" /tmp/src); then
-				eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src $BUILDKIT_TAG
-			fi
+		if $("$BUILDKIT_BUILDERS:detect-build" /tmp/src); then
+			eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src $BUILDKIT_TAG
+		fi
 	done
 
 }
