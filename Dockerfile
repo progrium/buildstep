@@ -8,8 +8,9 @@ COPY buildkit /usr/bin/
 COPY plugn /usr/bin/
 COPY plugins/ /var/buildkit/plugins
 
-RUN mkdir -p /tmp/src \
-    & plugn enable core \
-    & plugn enable docker
+RUN mkdir -p /tmp/src
+RUN plugn enable core \
+    & plugn enable docker \
+    & plugn list
 
 ENTRYPOINT ["buildkit"]

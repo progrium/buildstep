@@ -11,7 +11,7 @@ export PLUGIN_PATH=${PLUGIN_PATH:="plugins"}
 export BUILDKIT_BUILDERS=${BUILDKIT_BUILDERS:="docker"}
 export BUILDKIT_ARTIFACT=${BUILDKIT_ARTIFACT:="image"}
 export BUILDKIT_INPUT=${BUILDKIT_INPUT:="stdin"}
-export BUILDKIT_TAG=${BUILDKIT_TAG}
+export BUILDKIT_TAG=$BUILDKIT_TAG
 # export BUILDKIT_OUTPUT=${BUILDKIT_OUTPUT:="stdout"}
 
 
@@ -24,18 +24,21 @@ main() {
 	$(plugn source exporter)
 
 	# Import
-	eval "$BUILDKIT_INPUT:import"
+	"$BUILDKIT_INPUT:import"
 
-	for i in $BUILDKIT_BUILDERS; do
-		if $("$BUILDKIT_BUILDERS:detect-build" /tmp/src); then
-			eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src $BUILDKIT_TAG
-		fi
+	for builder in $BUILDKIT_BUILDERS; do
+		$builder:detect-build && build;
 	done
 
 }
 
-# build() {
-# 	# eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src
-# }
+build() {
+	"$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" "$BUILDKIT_TAG"
+	# eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src
+}
 
-main "$@"
+if [[ "$1" == "plugin" ]]; then
+	shift; plugn "$@"
+else
+	main "$@"
+fi

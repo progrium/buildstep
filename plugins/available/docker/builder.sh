@@ -1,13 +1,10 @@
 
-# Check if Dockerfile exists
+# detect dockerfile
 docker:detect-build() {
-  if [ -f $1/Dockerfile ]; then
-    return 0
-  fi
-  return 1
+  [[ -f /tmp/src/Dockerfile ]]
 }
 
 docker:build-image() {
-  declare path="$1" tag="${2?BUILDKIT_TAG not set}"
-  cd $path; docker build -t $tag .
+  declare tag="${1?BUILDKIT_TAG not set}"
+  docker build -t $tag /tmp/src
 }

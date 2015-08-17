@@ -1,6 +1,6 @@
 
 
-# Import tar from stdin
+# import tar and extract to /tmp/src
 stdin:import() {
   cat | tar xC /tmp/src
 }
