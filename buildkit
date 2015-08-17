@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [[ "$BASH_VERSINFO" -lt "4" ]]; then
+	echo "!! Your system Bash is out of date: $BASH_VERSION"
+	echo "!! Please upgrade to Bash 4 or greater."
+	exit 2
+fi
+
+export PLUGIN_PATH=${PLUGIN_PATH:="plugins"}
+
+export BUILDKIT_BUILDERS=${BUILDKIT_BUILDERS:="docker"}
+export BUILDKIT_ARTIFACT=${BUILDKIT_ARTIFACT:="image"}
+export BUILDKIT_INPUT=${BUILDKIT_INPUT:="stdin"}
+export BUILDKIT_TAG=${BUILDKIT_TAG}
+# export BUILDKIT_OUTPUT=${BUILDKIT_OUTPUT:="stdout"}
+
+
+main() {
+	set -eo pipefail; [[ "$TRACE" ]] && set -x
+
+	# Source all plugins
+	$(plugn source importer)
+	$(plugn source builder)
+	$(plugn source exporter)
+
+	# Import
+  eval "$BUILDKIT_INPUT:import"
+
+	for i in $BUILDKIT_BUILDERS; do
+			if $("$BUILDKIT_BUILDERS:detect-build" /tmp/src); then
+				eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src $BUILDKIT_TAG
+			fi
+	done
+
+}
+
+# build() {
+# 	# eval "$BUILDKIT_BUILDERS:build-$BUILDKIT_ARTIFACT" /tmp/src
+# }
+
+main "$@"

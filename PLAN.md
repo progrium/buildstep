@@ -16,7 +16,7 @@ Core/Builtin
 
 ```  
 docker run —-rm \
-	-e BUILDKIT_BUILDERS=dockerfile \
+	-e BUILDKIT_BUILDERS=docker \
 	-e BUILDKIT_ARTIFACT=file \
 	-e BUILDKIT_FILE=myapp.tgz \
 	-e BUILDKIT_OUTPUT=docker \
@@ -62,5 +62,26 @@ git archive master | \
   - build-file: export from docker as a tar, save in artifacts folder
 
 
+# Week 2
+## Adding Herokuish - 1 day
+  - image tag
+  - exporter (from core)
+  - herokuish vars
 
-# Adding Herokuish
+# Docker in docker - 2 day
+- env vars
+- Export image to parent docker
+- logic to choose which docker daemon to use.
+
+
+# week 3
+- hooks
+##  Dockerfile Plugin Config
+
+`DOCKERFILE_OPTS`
+- options to pass to `docker build`
+- example: —-force-rm
+
+`DOCKERFILE_CP`
+- specify file to `docker cp` from image
+- example: /path/to/artifact/in/container
