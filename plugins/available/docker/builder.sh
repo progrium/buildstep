@@ -5,6 +5,6 @@ docker:detect-build() {
 }
 
 docker:build-image() {
-  declare tag="${1?BUILDKIT_TAG not set}"
+  declare tag="${BUILDKIT_TAG?not set}"
   docker build -t $tag /tmp/src
 }

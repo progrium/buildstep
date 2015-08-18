@@ -2,7 +2,7 @@
 
 # import tar and extract to /tmp/src
 stdin:import() {
-  cat | tar xC /tmp/src
+  tar xf - -C/tmp/src
 }
 
 dir:import() {
