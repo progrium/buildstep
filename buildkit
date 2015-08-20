@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+if [[ "$BASH_VERSINFO" -lt "4" ]]; then
+	echo "!! Your system Bash is out of date: $BASH_VERSION"
+	echo "!! Please upgrade to Bash 4 or greater."
+	exit 2
+fi
+
+export PLUGIN_PATH=${PLUGIN_PATH:="plugins"}
+
+export BUILDKIT_BUILDERS=${BUILDKIT_BUILDERS:="dockerfile"}
+export BUILDKIT_ARTIFACT=${BUILDKIT_ARTIFACT:="image"}
+export BUILDKIT_INPUT=${BUILDKIT_INPUT:="stdin"}
+export BUILDKIT_OUTPUT=${BUILDKIT_OUTPUT:="docker"}
+
+output_redirect() {
+  if [[ "$BUILDKIT_OUTPUT" == "stdout" ]]; then
+    cat - 1>&2
+  else
+    cat -
+  fi
+}
+
+echo_title() {
+  echo $'\e[1G----->' $* | output_redirect
+}
+
+echo_normal() {
+  echo $'\e[1G      ' $* | output_redirect
+}
+
+main() {
+	set -eo pipefail; [[ "$TRACE" ]] && set -x
+
+	# Source all plugins
+	$(plugn source importer)
+	$(plugn source builder)
+	$(plugn source exporter)
+
+	# import app
+	echo_title "Importing from $BUILDKIT_INPUT"
+	$BUILDKIT_INPUT:import
+
+
+	echo_title "Detecting builder from $BUILDKIT_BUILDERS"
+	for builder in $BUILDKIT_BUILDERS; do
+		if $builder:detect-build; then
+			echo_normal "Building with $builder as a $BUILDKIT_ARTIFACT"
+			"$builder:build-$BUILDKIT_ARTIFACT" | output_redirect
+			break
+		fi
+	done
+
+	echo_title "Exporting $BUILDKIT_ARTIFACT artifact to $BUILDKIT_OUTPUT"
+	$BUILDKIT_OUTPUT:export-$BUILDKIT_ARTIFACT
+
+}
+
+case "$1" in
+	plugin) shift; plugn "$@";;
+	*) 			main "$@";;
+esac

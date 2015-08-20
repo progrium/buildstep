@@ -1,0 +1,6 @@
+[plugin]
+name = "docker"
+description = ""
+version = "0.1"
+
+[plugin.config]

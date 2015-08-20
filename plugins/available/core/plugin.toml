@@ -1,0 +1,6 @@
+[plugin]
+name = "core"
+description = ""
+version = "0.1"
+
+[plugin.config]
