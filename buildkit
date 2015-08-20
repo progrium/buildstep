@@ -8,11 +8,26 @@ fi
 
 export PLUGIN_PATH=${PLUGIN_PATH:="plugins"}
 
-export BUILDKIT_BUILDERS=${BUILDKIT_BUILDERS:="docker"}
+export BUILDKIT_BUILDERS=${BUILDKIT_BUILDERS:="dockerfile"}
 export BUILDKIT_ARTIFACT=${BUILDKIT_ARTIFACT:="image"}
 export BUILDKIT_INPUT=${BUILDKIT_INPUT:="stdin"}
 export BUILDKIT_OUTPUT=${BUILDKIT_OUTPUT:="docker"}
 
+output_redirect() {
+  if [[ "$BUILDKIT_OUTPUT" == "stdout" ]]; then
+    cat - 1>&2
+  else
+    cat -
+  fi
+}
+
+echo_title() {
+  echo $'\e[1G----->' $* | output_redirect
+}
+
+echo_normal() {
+  echo $'\e[1G      ' $* | output_redirect
+}
 
 main() {
 	set -eo pipefail; [[ "$TRACE" ]] && set -x
@@ -23,11 +38,21 @@ main() {
 	$(plugn source exporter)
 
 	# import app
+	echo_title "Importing from $BUILDKIT_INPUT"
 	$BUILDKIT_INPUT:import
 
+
+	echo_title "Detecting builder from $BUILDKIT_BUILDERS"
 	for builder in $BUILDKIT_BUILDERS; do
-		$builder:detect-build && $builder:build-$BUILDKIT_ARTIFACT
+		if $builder:detect-build; then
+			echo_normal "Building with $builder as a $BUILDKIT_ARTIFACT"
+			"$builder:build-$BUILDKIT_ARTIFACT" | output_redirect
+			break
+		fi
 	done
+
+	echo_title "Exporting $BUILDKIT_ARTIFACT artifact to $BUILDKIT_OUTPUT"
+	$BUILDKIT_OUTPUT:export-$BUILDKIT_ARTIFACT
 
 }
 

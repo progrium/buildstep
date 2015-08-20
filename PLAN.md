@@ -62,7 +62,7 @@ git archive master | \
   - build-file: export from docker as a tar, save in artifacts folder
 
 
-# Week 2
+# Sprint 2
 ## Adding Herokuish - 1 day
   - image tag
   - exporter (from core)
@@ -74,9 +74,9 @@ git archive master | \
 - logic to choose which docker daemon to use.
 
 
-# week 3
+# Sprint 3
 - hooks
-##  Dockerfile Plugin Config
+## Dockerfile Plugin Config
 
 `DOCKERFILE_OPTS`
 - options to pass to `docker build`

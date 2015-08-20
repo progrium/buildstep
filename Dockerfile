@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk --update add bash docker
+RUN apk --update add bash docker util-linux
 
 ENV PLUGIN_PATH /var/buildkit/plugins
 
