@@ -5,19 +5,27 @@ echo "[DEPRECATED] This script is outdated and was originally for demo purposes.
 
 NAME="$1"
 TAG="$2"
+CACHE_DIR="$3"
 
 # Place the app inside the container. If you already have app inside your tar, use /bin/bash -c "tar -x"
 ID=$(cat | docker run -i -a stdin progrium/buildstep /bin/bash -c "mkdir -p /app && tar -xC /app")
 test $(docker wait $ID) -eq 0
 docker commit $ID $NAME $TAG > /dev/null
 
-# Run the builder script and attach to view output
+# Handle a tag by appending it to the image name
 if [[ -z "$TAG" ]]; then
   IMAGE=$NAME
 else
   IMAGE=$NAME:$TAG
 fi
-ID=$(docker run -d $IMAGE /build/builder)
+# Bind mount a host cache dir to /cache inside the container
+if [[ -z "$CACHE_DIR" ]]; then
+  OPTS='-d'
+else
+  OPTS="-d -v $CACHE_DIR:/cache"
+fi
+# Run the builder script and attach to view output
+ID=$(docker run $OPTS $IMAGE /build/builder)
 docker attach $ID
 test $(docker wait $ID) -eq 0
 docker commit $ID $NAME $TAG > /dev/null
