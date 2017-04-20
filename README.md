@@ -14,19 +14,19 @@ Buildpacks should generally just work, but many of them make assumptions about t
 
 ## Building Buildstep
 
-The buildstep script uses a buildstep base container that needs to be built. It must be created before
+The buildstep script uses a buildstep base image that needs to be built. It must be created before
 you can use the buildstep script. To create it, run:
 
     $ make build
 
-This will create a container called `progrium/buildstep` that contains all supported buildpacks and the
+This will create an image called `progrium/buildstep` that contains all supported buildpacks and the
 builder script that will actually perform the build using the buildpacks.
 
 ## Building an App
 
-Running the buildstep script will take an application tar via STDIN and an application container name as
-an argument. It will put the application in a new container based on `progrium/buildstep` with the specified name.
-Then it runs the builder script inside the container.
+Running the buildstep script will take an application tar via STDIN and the destination image name as an argument.
+The tarball is deployed inside a new container based on `progrium/buildstep`, and the `builder` script is run in
+the container. The container is then committed to create an image with the specified name.
 
     $ cat myapp.tar | ./buildstep myapp
 
@@ -34,7 +34,7 @@ If you didn't already have an application tar, you can create one on the fly.
 
     $ tar cC /path/to/your/app . | ./buildstep myapp
 
-The resulting container has a built app ready to go. The builder script also parses the Procfile and produces
+The resulting image contains your built app, ready to go. The builder script also parses the Procfile and produces
 a starter script that takes a process type. Run your app with:
 
     $ docker run -d myapp /bin/bash -c "/start web"
